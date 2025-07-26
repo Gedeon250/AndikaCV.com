@@ -9,6 +9,7 @@ import Home from './pages/Home'
 import CVBuilder from './pages/CVBuilder'
 import CoverLetterGenerator from './pages/CoverLetterGenerator'
 import Dashboard from './pages/Dashboard'
+import AdminDashboard from './pages/AdminDashboard'
 import Contact from './pages/Contact'
 import Templates from './pages/Templates'
 import Pricing from './pages/Pricing'
@@ -29,8 +30,9 @@ function App() {
                 <Route path="/templates" element={<Templates />} />
                 <Route path="/cover-letter" element={<CoverLetterGenerator />} />
                 <Route path="/blog" element={<div className="min-h-screen flex items-center justify-center"><h1 className="text-2xl text-gray-600">Blog Coming Soon</h1></div>} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/contact" element={<Contact />} />
+                                       <Route path="/dashboard" element={<Dashboard />} />
+                       <Route path="/admin" element={<AdminDashboard />} />
+                       <Route path="/contact" element={<Contact />} />
               </Routes>
             </main>
                                <Footer />
