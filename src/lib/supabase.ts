@@ -3,11 +3,17 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
+// Debug: Log environment variables
+console.log('🔍 Debug - Supabase URL:', supabaseUrl)
+console.log('🔍 Debug - Supabase Key (first 20 chars):', supabaseAnonKey ? supabaseAnonKey.substring(0, 20) + '...' : 'NOT SET')
+
 // Check if environment variables are set
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase environment variables are not set. Authentication features will be disabled.')
+  console.warn('❌ Supabase environment variables are not set. Authentication features will be disabled.')
   console.warn('Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file')
   console.warn('For development, you can use demo values or create a real Supabase project.')
+} else {
+  console.log('✅ Supabase environment variables are properly configured!')
 }
 
 // Create a mock client if environment variables are not set

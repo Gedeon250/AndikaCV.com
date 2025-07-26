@@ -29,6 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('🔍 Initial session:', session)
       setSession(session)
       setUser(session?.user ?? null)
       setLoading(false)
@@ -37,6 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('🔍 Auth state change:', { event, session })
         setSession(session)
         setUser(session?.user ?? null)
         setLoading(false)
@@ -47,53 +49,93 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [])
 
   const signUp = async (email: string, password: string, fullName: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
+    try {
+      console.log('🔍 Attempting to sign up user:', { email, fullName })
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+          },
         },
-      },
-    })
+      })
 
-    if (error) {
-      if (error.message === 'Supabase not configured') {
-        throw new Error('Please configure Supabase environment variables to enable authentication')
+      console.log('🔍 Sign up response:', { data, error })
+
+      if (error) {
+        if (error.message === 'Supabase not configured') {
+          throw new Error('Please configure Supabase environment variables to enable authentication')
+        }
+        throw error
       }
+
+      // The profile should be created automatically by the database trigger
+      // Let's check if it was created
+      if (data.user) {
+        console.log('🔍 User created, checking if profile exists...')
+        
+        // Wait a moment for the trigger to execute
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .maybeSingle()
+
+        console.log('🔍 Profile check result:', { profileData, profileError })
+        
+        if (profileError && profileError.code !== 'PGRST116') {
+          console.error('🔍 Profile creation failed:', profileError)
+          // Try to create profile manually as fallback
+          const { error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              id: data.user.id,
+              email: data.user.email!,
+              full_name: fullName,
+              subscription_tier: 'free',
+            })
+
+          if (insertError) {
+            console.error('🔍 Manual profile creation also failed:', insertError)
+            throw insertError
+          }
+        }
+      }
+
+      return data
+    } catch (error) {
+      console.error('🔍 Sign up error:', error)
       throw error
     }
-
-    // Create profile
-    if (data.user) {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: data.user.id,
-          email: data.user.email!,
-          full_name: fullName,
-          subscription_tier: 'free',
-        })
-
-      if (profileError) throw profileError
-    }
-
-    return data
   }
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    try {
+      console.log('🔍 Attempting to sign in user:', { email })
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
-    if (error) {
-      if (error.message === 'Supabase not configured') {
-        throw new Error('Please configure Supabase environment variables to enable authentication')
+      console.log('🔍 Sign in response:', { data, error })
+
+      if (error) {
+        if (error.message === 'Supabase not configured') {
+          throw new Error('Please configure Supabase environment variables to enable authentication')
+        }
+        throw error
       }
+      
+      return data
+    } catch (error) {
+      console.error('🔍 Sign in error:', error)
       throw error
     }
-    return data
   }
 
   const signOut = async () => {

@@ -138,7 +138,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onToggleMo
                   <input
                     {...currentForm.register('email')}
                     type="email"
-                    id="email"
+                    id="auth-email"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     placeholder="Enter your email"
                   />

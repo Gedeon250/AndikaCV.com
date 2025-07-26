@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard'
 import Contact from './pages/Contact'
 import Templates from './pages/Templates'
 import Pricing from './pages/Pricing'
+import DebugPanel from './components/DebugPanel'
 
 function App() {
   return (
@@ -32,12 +33,13 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
               </Routes>
             </main>
-            <Footer />
-            <Toaster position="top-right" />
-          </div>
-        </Router>
-      </AuthProvider>
-    </LanguageProvider>
+                               <Footer />
+                   <Toaster position="top-right" />
+                   <DebugPanel />
+                 </div>
+               </Router>
+             </AuthProvider>
+           </LanguageProvider>
   )
 }
 
