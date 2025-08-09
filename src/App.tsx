@@ -13,7 +13,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import Contact from './pages/Contact'
 import Templates from './pages/Templates'
 import Pricing from './pages/Pricing'
-import DebugPanel from './components/DebugPanel'
+import DevIndicator from './components/DevIndicator'
 
 function App() {
   return (
@@ -30,18 +30,18 @@ function App() {
                 <Route path="/templates" element={<Templates />} />
                 <Route path="/cover-letter" element={<CoverLetterGenerator />} />
                 <Route path="/blog" element={<div className="min-h-screen flex items-center justify-center"><h1 className="text-2xl text-gray-600">Blog Coming Soon</h1></div>} />
-                                       <Route path="/dashboard" element={<Dashboard />} />
-                       <Route path="/admin" element={<AdminDashboard />} />
-                       <Route path="/contact" element={<Contact />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/contact" element={<Contact />} />
               </Routes>
             </main>
-                               <Footer />
-                   <Toaster position="top-right" />
-                   <DebugPanel />
-                 </div>
-               </Router>
-             </AuthProvider>
-           </LanguageProvider>
+            <Footer />
+            <Toaster position="top-right" />
+            <DevIndicator />
+          </div>
+        </Router>
+      </AuthProvider>
+    </LanguageProvider>
   )
 }
 

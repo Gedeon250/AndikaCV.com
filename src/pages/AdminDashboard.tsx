@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import toast from 'react-hot-toast'
+import AdminDebugToggle from '../components/AdminDebugToggle'
 
 interface User {
   id: string
@@ -90,19 +91,31 @@ const AdminDashboard: React.FC = () => {
   const handleFileUpload = async (file: File) => {
     try {
       setUploading(true)
+      console.log('🔍 Attempting to upload file:', file.name)
       
       // Upload file to Supabase Storage
       const fileName = `${Date.now()}-${file.name}`
+      console.log('🔍 File name:', fileName)
+      
       const { data, error } = await supabase.storage
         .from('templates')
-        .upload(fileName, file)
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false
+        })
 
-      if (error) throw error
+      console.log('🔍 Upload result:', { data, error })
+
+      if (error) {
+        console.error('🔍 Upload error details:', error)
+        throw error
+      }
 
       return data.path
     } catch (error) {
-      console.error('Upload error:', error)
-      toast.error('Failed to upload file')
+      console.error('🔍 Upload error:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      toast.error(`Failed to upload file: ${errorMessage}`)
       return null
     } finally {
       setUploading(false)
@@ -186,8 +199,8 @@ const AdminDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
@@ -544,6 +557,9 @@ const AdminDashboard: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      {/* Admin Debug Toggle - Only visible on admin dashboard */}
+      <AdminDebugToggle />
     </div>
   )
 }

@@ -60,44 +60,31 @@ const DebugPanel: React.FC = () => {
   }, [])
 
   return (
-    <div className="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-lg p-4 shadow-lg max-w-md z-50">
-      <h3 className="font-bold text-sm mb-2">🔍 Debug Panel</h3>
+    <div className="fixed bottom-20 right-4 bg-white border border-gray-300 rounded-lg p-4 shadow-lg max-w-md z-50">
+      <h3 className="font-bold text-sm mb-3">🔍 Debug Panel</h3>
       
       <div className="space-y-2 text-xs">
-        <div>
-          <strong>User:</strong> {user ? user.email : 'Not logged in'}
-        </div>
-        <div>
-          <strong>Session:</strong> {session ? 'Active' : 'None'}
-        </div>
-        <div>
-          <strong>Loading:</strong> {loading ? 'Yes' : 'No'}
-        </div>
-        <div>
-          <strong>Database:</strong> {dbStatus}
-        </div>
-        
-        <div className="mt-3 space-y-1">
-          <button
-            onClick={testDatabaseConnection}
-            className="w-full px-2 py-1 bg-blue-500 text-white rounded text-xs"
-          >
-            Test DB Connection
-          </button>
-          <button
-            onClick={testAuthenticatedAccess}
-            className="w-full px-2 py-1 bg-green-500 text-white rounded text-xs"
-          >
-            Test Auth Access
-          </button>
-        </div>
-        
-        {testResult && (
-          <div className="mt-2 p-2 bg-gray-100 rounded text-xs">
-            <strong>Test Result:</strong><br />
-            {testResult}
-          </div>
-        )}
+        <div><strong>User:</strong> {user ? user.email : 'Not logged in'}</div>
+        <div><strong>Session:</strong> {session ? 'Active' : 'None'}</div>
+        <div><strong>Loading:</strong> {loading ? 'Yes' : 'No'}</div>
+        <div><strong>Database:</strong> {dbStatus}</div>
+        {testResult && <div><strong>Test Result:</strong> {testResult}</div>}
+      </div>
+
+      <div className="mt-3 space-y-2">
+        <button
+          onClick={testDatabaseConnection}
+          className="w-full px-3 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600 transition-colors"
+        >
+          Test DB Connection
+        </button>
+        <button
+          onClick={testAuthenticatedAccess}
+          disabled={!user}
+          className="w-full px-3 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          Test Auth Access
+        </button>
       </div>
     </div>
   )
